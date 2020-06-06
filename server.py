@@ -46,8 +46,8 @@ def get_table(key):
     s = m.digest()
     (a, b) = struct.unpack('<QQ', s)
     table = [c for c in string.maketrans('', '')]
-    for i in xrange(1, 1024):
-        table.sort(lambda x, y: int(a % (ord(x) + i) - a % (ord(y) + i)))
+    for i in xrange(1, 256):
+        table.sort(lambda x, y: int(a % (ord(x) + i) - b % (ord(y) + i)))
     return table
 
 def send_all(sock, data):
@@ -60,8 +60,6 @@ def send_all(sock, data):
         if bytes_sent == len(data):
             return bytes_sent
 
-class ThreadingTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
-    allow_reuse_address = True
 
 
 class Socks5Server(SocketServer.StreamRequestHandler):
@@ -147,9 +145,10 @@ if __name__ == '__main__':
     encrypt_table = ''.join(get_table(KEY))
     decrypt_table = string.maketrans(encrypt_table, string.maketrans('', ''))
     if '-6' in sys.argv[1:]:
-        ThreadingTCPServer.address_family = socket.AF_INET6
+        SocketServer.ThreadingTCPServer.address_family = socket.AF_INET6
     try:
-        server = ThreadingTCPServer(('', PORT), Socks5Server)
+        SocketServer.ThreadingTCPServer.allow_reuse_address = True
+        server = SocketServer.ThreadingTCPServer(('', PORT), Socks5Server)
         logging.info("starting server at port %d ..." % PORT)
         server.serve_forever()
     except socket.error, e:

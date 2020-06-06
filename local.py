@@ -46,8 +46,8 @@ def get_table(key):
     s = m.digest()
     (a, b) = struct.unpack('<QQ', s)
     table = [c for c in string.maketrans('', '')]
-    for i in xrange(1, 1024):
-        table.sort(lambda x, y: int(a % (ord(x) + i) - a % (ord(y) + i)))
+    for i in xrange(1, 256):
+        table.sort(lambda x, y: int(a % (ord(x) + i) - b % (ord(y) + i)))
     return table
 
 def send_all(sock, data):
