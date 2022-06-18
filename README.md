@@ -1,5 +1,5 @@
+try run
 
-i do not familiar with git , update based on shadowsocks (developed by clowwindy)
 
 Server
 ------
